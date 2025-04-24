@@ -1,0 +1,14 @@
+[project]
+name = "retail_therapist"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "chromadb>=1.0.5",
+    "langchain>=0.3.23",
+    "langchain-community>=0.3.21",
+    "langchain-openai>=0.3.14",
+    "pypdf>=5.4.0",
+    "streamlit>=1.44.1",
+]
