@@ -4,10 +4,6 @@ import os
 # File path for saved reviews
 REVIEWS_FILE = "saved_reviews.json"
 
-# customer_review = """The only place I've been to that consistently refuses to tape your shipment for you even though it costs them less than a cent, and instead force you to buy their outrageously overpriced tape. Again, either because they're too lazy to put a piece of tape for you on a box or they get a kickback for scamming customers being forced to buy their $10 tape."""
-# customer_review = """I can't believe that I have to pay $5 dollars to print a single page for my return label.  These guys are such scammers. You know the public library has printing for free!"""
-# customer_review = """This store is too busy! Too many people come here to drop off returns! What the heck! I just want to send a package via next day! What the heck?"""
-
 
 def display_review_management(st, callback_on_select=None):
     if "customer_review" not in st.session_state:
@@ -19,18 +15,27 @@ def display_review_management(st, callback_on_select=None):
     review_tab1, review_tab2 = st.tabs(["New Review", "Saved Reviews"])
 
     with review_tab1:
+
+        def on_review_entered():
+            # st.session_state.customer_review = customer_review
+            st.session_state.customer_review = st.session_state.review_input
+            print(f"on_review_entered: {st.session_state.review_input}")
+            st.rerun()
+
         # User input
         customer_review = st.text_area(
             "2. Enter the customer review:",
             value=st.session_state.customer_review,
             height=100,
             key="review_input",
+            on_change=on_review_entered,
         )
 
-        st.session_state.customer_review = customer_review
-
         # Save button
-        if st.button("Save Review", key="save_new") and customer_review:
+        if (
+            st.button("Save Review", key="save_new", type="tertiary")
+            and customer_review
+        ):
             st.session_state.saved_reviews.append(customer_review)
             save_review(customer_review)
             st.success("Review saved!")
@@ -39,25 +44,34 @@ def display_review_management(st, callback_on_select=None):
         if not st.session_state.saved_reviews:
             st.info("No saved reviews yet.")
         else:
+            refresh = False
+
+            # Define callback function for when selection changes
+            def on_review_selected():
+                # Get the selected review
+                selected_review = st.session_state.saved_reviews[
+                    st.session_state.review_selector
+                ]
+                # Update the customer review in session state
+                st.session_state.customer_review = selected_review
+
             # Create a selectbox for review selection
             selected_index = st.selectbox(
                 "Select a saved review",
                 range(len(st.session_state.saved_reviews)),
                 format_func=lambda i: st.session_state.saved_reviews[i],
-                key="review_selector",  # Important: give it a try
+                key="review_selector",
+                on_change=on_review_selected,
             )
 
-            # Use buttons with callbacks
-            if st.button("Use Selected Review", key="use_btn"):
-                selected_review = st.session_state.saved_reviews[selected_index]
-                st.session_state.customer_review = selected_review
-                if callback_on_select:
-                    callback_on_select(selected_review)
-
-            if st.button("Delete Selected Review", key="delete_btn"):
+            if st.button("Delete Selected Review", key="delete_btn", type="tertiary"):
                 st.session_state.saved_reviews.pop(selected_index)
                 delete_review(selected_index)
                 st.success("Review deleted!")
+                refresh = True
+
+            if refresh:
+                st.rerun()
 
 
 # Load saved reviews

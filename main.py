@@ -1,5 +1,6 @@
 import os
 import tempfile
+import time
 
 import streamlit as st
 from dotenv import load_dotenv
@@ -81,13 +82,15 @@ def main():
     elif st.session_state.customer_review is None:
         st.info("Please enter a customer review to get started.")
 
-    if st.button("Generate Response"):
+    if st.button("Generate Response", type="primary"):
         with st.spinner("Generating response..."):
             try:
                 # Initialize language model
                 model = ChatOpenAI(
                     model="gpt-4o",
                     temperature=0.7,  # More personality and nuance
+                    request_timeout=60,  # Longer timeout
+                    model_kwargs={"user": f"user_{int(time.time())}"},  # Unique user ID
                 )
 
                 # Load the vector database
@@ -112,8 +115,14 @@ def main():
                 )
 
                 # print("Chain is {0}".format(qa_chain))
-
+                print(
+                    f"Generate response, customer review is {st.session_state.customer_review}"
+                )
                 response = qa_chain.invoke({"query": st.session_state.customer_review})
+
+                response = qa_chain.invoke(
+                    {"query": f"{st.session_state.customer_review} [ts:{time.time()}]"}
+                )
                 raw_response = response["result"]
 
                 # Get the retrieved documents
@@ -121,9 +130,6 @@ def main():
 
                 try:
                     parsed_response = output_parser.parse(raw_response)
-
-                    # Display retrieved documents first
-                    st.header("Retrieved Context")
 
                     # Let users choose how many documents to view
                     # max_docs = min(
@@ -133,11 +139,12 @@ def main():
                     #     "Number of documents to display", 1, max_docs, 3
                     # )
 
-                    st.header("Retrieved Context (Top Documents)")
-                    for i, doc in enumerate(retrieved_docs[:3]):
-                        with st.expander(
-                            f"Document {i + 1} - {doc.metadata.get('section', 'Unknown Section')}"
-                        ):
+                    # Display retrieved documents first
+                    with st.expander("View Retrieved Context "):
+                        st.header("Retrieved Context (Top Documents)")
+
+                        for i, doc in enumerate(retrieved_docs[:6]):
+                            st.write(f":blue[Document {i + 1}]")
                             st.write(doc.page_content)
                             # st.write("**Metadata:**")
                             # st.json(doc.metadata)
