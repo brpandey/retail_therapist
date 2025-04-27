@@ -12,6 +12,8 @@ from langchain_community.vectorstores import Chroma
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
+import reviews
+
 # Load environment variables from .env
 load_dotenv()
 set_debug(False)
@@ -22,10 +24,6 @@ EMBEDDING_MODEL = "text-embedding-3-small"
 
 def main():
     st.title("Retail Therapist")
-
-    # customer_review = """The only place I've been to that consistently refuses to tape your shipment for you even though it costs them less than a cent, and instead force you to buy their outrageously overpriced tape. Again, either because they're too lazy to put a piece of tape for you on a box or they get a kickback for scamming customers being forced to buy their $10 tape."""
-    # customer_review = """I can't believe that I have to pay $4 dollars to print a single page for my return label.  These guys are such scammers. You know the public library has printing for free!"""
-    # customer_review = """This store is too busy! Too many people come here to drop off returns! What the heck! I just want to send a package via next day! What the heck?"""
 
     # Set your OpenAI API key
     # Either get from environment variable or let user input it
@@ -74,16 +72,16 @@ def main():
 
     output_parser = create_output_parser()
 
-    # User input
-    customer_review = st.text_input("2. Enter the customer review:", "")
+    reviews.display_review_management(st, None)
 
     if st.session_state.retriever is None:
         st.info(
             "Please upload and process a policy document first, then submit a review."
         )
-    elif customer_review is None:
+    elif st.session_state.customer_review is None:
         st.info("Please enter a customer review to get started.")
-    else:
+
+    if st.button("Generate Response"):
         with st.spinner("Generating response..."):
             try:
                 # Initialize language model
@@ -98,7 +96,7 @@ def main():
                 #     st.error("Failed to load or create the vector database.")
                 #     return
 
-                # Create the retriever
+                # Create the prompt
                 few_shot_prompt = create_few_shot_prompt(output_parser)
 
                 print("About to invoke chain with feedback")
@@ -115,7 +113,7 @@ def main():
 
                 # print("Chain is {0}".format(qa_chain))
 
-                response = qa_chain.invoke({"query": customer_review})
+                response = qa_chain.invoke({"query": st.session_state.customer_review})
                 raw_response = response["result"]
 
                 # Get the retrieved documents
@@ -136,7 +134,7 @@ def main():
                     # )
 
                     st.header("Retrieved Context (Top Documents)")
-                    for i, doc in enumerate(retrieved_docs[:]):
+                    for i, doc in enumerate(retrieved_docs[:3]):
                         with st.expander(
                             f"Document {i + 1} - {doc.metadata.get('section', 'Unknown Section')}"
                         ):
@@ -182,7 +180,7 @@ def main():
                 st.sidebar.write("""
                 1. Upload your policy PDF document
                 2. Click 'Process Policy Document'
-                3. Enter a customer review 
+                3. Enter a customer review or alternatively re-run a saved review
                 4. Click 'Generate Responses'
                 5. View the different response styles
                 """)
