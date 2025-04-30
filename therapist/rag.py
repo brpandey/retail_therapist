@@ -4,7 +4,6 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 EMBEDDING_MODEL = "text-embedding-3-small"
-# DOC_PATH = "./policies/store.pdf"
 
 
 def create_retriever(doc_path):

@@ -1,12 +1,12 @@
 import json
 import os
 
-# File path for saved reviews
-REVIEWS_FILE = "saved_reviews.json"
-
 from langchain.globals import set_llm_cache
 
 set_llm_cache(None)  # Disable caching
+
+# File path for saved reviews
+REVIEWS_FILE = "./therapist/saved_reviews.json"
 
 
 def display_review_management(st, callback_on_select=None):

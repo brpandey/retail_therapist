@@ -11,9 +11,9 @@ from langchain_core.globals import set_llm_cache
 # from langchain_core.caches import InMemoryCache
 from langchain_openai import ChatOpenAI
 
-import few_shot
-import rag
-import reviews
+import therapist.few_shot as few_shot
+import therapist.rag as rag
+import therapist.reviews as reviews
 
 set_llm_cache(None)
 # set_llm_cache(InMemoryCache())
@@ -21,7 +21,6 @@ set_llm_cache(None)
 # Load environment variables from .env
 load_dotenv()
 set_debug(False)
-# set_debug(True)
 
 
 def main():
@@ -56,9 +55,6 @@ def main():
 
                 print(response["result"])
                 print(st.session_state.retriever)
-
-                # st.markdown("**Assistant:**")
-                # st.write(response)
 
                 # Add some instructions
                 st.sidebar.header("Instructions")
@@ -194,10 +190,6 @@ def display_content(response, output_parser):
         with tab3:
             st.subheader("Practical Response")
             st.write(parsed_response["solution_oriented_response"])
-
-        # Show raw JSON for reference
-        # with st.expander("View JSON Response"):
-        #   st.json(parsed_response)
 
     except Exception as e:
         st.error(f"Error parsing response: {e}")

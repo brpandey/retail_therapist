@@ -2,7 +2,7 @@ from langchain.output_parsers import ResponseSchema, StructuredOutputParser
 from langchain.prompts import FewShotPromptTemplate, PromptTemplate
 from langchain_core.prompts import load_prompt
 
-PROMPT_PATH = "./cs_few_shot.json"
+PROMPT_PATH = "./therapist/cs_few_shot.json"
 
 
 def create_few_shot_prompt():
@@ -31,12 +31,12 @@ def create_few_shot_prompt():
         input_variables=["customer_complaint", "response"], template=example_template
     )
 
-    # 6. Create the RetrievalQA chain
+    # Create the RetrievalQA chain
     #    qa_chain = RetrievalQA.from_chain_type(
     #        llm=ChatOpenAI(), chain_type="stuff", retriever=retriever
     #    )
 
-    # 7. Ask a question
+    # Ask a question
     #     response = qa_chain.invoke(
     #         {"query": "What's the store's policy on packaging tape?"}
     #     )
@@ -114,6 +114,6 @@ def create_output_parser():
         ),
     ]
 
-    # 4. Create the output parser
+    # Create the output parser
     output_parser = StructuredOutputParser.from_response_schemas(response_schemas)
     return output_parser
