@@ -4,6 +4,10 @@ import os
 # File path for saved reviews
 REVIEWS_FILE = "saved_reviews.json"
 
+from langchain.globals import set_llm_cache
+
+set_llm_cache(None)  # Disable caching
+
 
 def display_review_management(st, callback_on_select=None):
     if "customer_review" not in st.session_state:
@@ -20,7 +24,6 @@ def display_review_management(st, callback_on_select=None):
             # st.session_state.customer_review = customer_review
             st.session_state.customer_review = st.session_state.review_input
             print(f"on_review_entered: {st.session_state.review_input}")
-            st.rerun()
 
         # User input
         customer_review = st.text_area(

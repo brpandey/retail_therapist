@@ -1,0 +1,45 @@
+{
+    "name": null,
+    "input_variables": [
+        "context",
+        "format_instructions",
+        "question"
+    ],
+    "optional_variables": [],
+    "output_parser": null,
+    "partial_variables": {},
+    "metadata": null,
+    "tags": null,
+    "examples": [
+        {
+            "customer_complaint": "Wow, this place is a joke. They wouldn't even tape my box shut. I guess customer service doesn't exist here.",
+            "response": "We're really sorry to hear your visit left that impression. We used to tape boxes as a courtesy, but over time, many packages began arriving completely unsealed, and unfortunately, some folks started relying on us for full repackaging\u2014which became tough to sustain. We now kindly ask that shipments come pre-sealed, but we understand how frustrating a change in expectations can be. We'll take this as a reminder to keep finding ways to serve more clearly and kindly."
+        },
+        {
+            "customer_complaint": "Every other store helps with this stuff. Why is this one so difficult?! I don't have time to argue over a roll of tape.",
+            "response": "We hear you\u2014it's never our intention to add stress to your day. While some locations may still provide taping assistance, our store had to update our policy after seeing a large increase in customers needing full repackaging help. It became unsustainable, both in cost and time. We totally get that when you're in a hurry, this feels like one more hassle. We'll keep working on how we communicate these policies clearly and kindly. Your time matters to us."
+        }
+    ],
+    "example_selector": null,
+    "validate_template": false,
+    "example_prompt": {
+        "name": null,
+        "input_variables": [
+            "customer_complaint",
+            "response"
+        ],
+        "optional_variables": [],
+        "output_parser": null,
+        "partial_variables": {},
+        "metadata": null,
+        "tags": null,
+        "template": "\n        CUSTOMER REVIEW:\n        {customer_complaint}\n\n        YOUR RESPONSE:\n        {response}\n    ",
+        "template_format": "f-string",
+        "validate_template": false
+    },
+    "suffix": "\n        CUSTOMER REVIEW:\n        {question}\n\n        {format_instructions}\n\n        YOUR RESPONSE:",
+    "example_separator": "\n\n",
+    "prefix": "You are a customer service representative responding to online reviews.\n        Please provide a response to the customer feedback with three different styles using the following store policy.\n\n        One style is a casual, fun, cheerful, with the air of a very refined and articulate woman.\n        Another style is humorous, relatable and adventurous.\n        The third style is jovial and practical, like a loyal trusty neighbor.\n\n        Gently educate the customer about the policy rationale.\n\n        Avoid platitudes. Have a real simple conversation, and use natural language.\n        Please provide three different replies given the three styles to above following customer\n        review feedback\n\n        Please also inject a few details from the original customer review so it feels authentic. \n        Please make response more than 6 sentences long in length, but no need for emoticons!\n\n        STORE POLICY CONTEXT:\n        {context}\n\n        By the way, if you are not fully prepared to answer based on the customer feedback and the context please reply\n        with a conciliatory message that you don't know.\n\n        Here are some examples of good responses to customer complaints:",
+    "template_format": "f-string",
+    "_type": "few_shot"
+}
