@@ -6,9 +6,9 @@ import streamlit as st
 from dotenv import load_dotenv
 from langchain.chains import RetrievalQA
 from langchain.globals import set_debug
-from langchain_core.globals import set_llm_cache
 
 # from langchain_core.caches import InMemoryCache
+from langchain_core.globals import set_llm_cache
 from langchain_openai import ChatOpenAI
 
 import therapist.few_shot as few_shot

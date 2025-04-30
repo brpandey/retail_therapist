@@ -2,7 +2,7 @@ from langchain.output_parsers import ResponseSchema, StructuredOutputParser
 from langchain.prompts import FewShotPromptTemplate, PromptTemplate
 from langchain_core.prompts import load_prompt
 
-PROMPT_PATH = "./therapist/cs_few_shot.json"
+PROMPT_PATH = "./therapist/few_shot.json"
 
 
 def create_few_shot_prompt():
@@ -92,9 +92,7 @@ def load_few_shot_prompt(output_parser):
     format_instructions = output_parser.get_format_instructions()
 
     few_shot = load_prompt(PROMPT_PATH)
-    result = few_shot.partial(format_instructions=format_instructions)
-
-    return result
+    return few_shot.partial(format_instructions=format_instructions)
 
 
 def create_output_parser():
@@ -115,5 +113,4 @@ def create_output_parser():
     ]
 
     # Create the output parser
-    output_parser = StructuredOutputParser.from_response_schemas(response_schemas)
-    return output_parser
+    return StructuredOutputParser.from_response_schemas(response_schemas)
